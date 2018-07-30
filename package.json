@@ -11,8 +11,13 @@
     "build": "webpack -p"
   },
   "dependencies": {
+    "date-fns": "^1.29.0",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "reselect": "^3.0.1",
+    "styled-components": "^3.3.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
