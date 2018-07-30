@@ -1,4 +1,5 @@
 // @flow
+import { remote } from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -15,101 +16,94 @@ import {
 
 import * as timerSelectors from '../../store/selectors';
 
-const Counter = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-`;
-
-const Header = styled.div`
-  background-color: ${props => (props.isActive ? '#40C984' : '#8f9ba9')};
-  color: #fff;
-  width: 100%;
-  padding: 16px;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-`;
-
-const Logo = styled.img.attrs({
-  src: 'src/assets/int_td.png',
-})`
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-`;
-
-const Play = styled.img.attrs({
-  src: 'src/assets/play.svg',
-})`
-  width: 24px;
-  height: 24px;
-`;
-
-const Stop = styled.img.attrs({
-  src: 'src/assets/stop.svg',
-})`
-  width: 24px;
-  height: 24px;
-`;
-
 const Time = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   font-family: 'Roboto Mono';
 `;
 
-const Footer = styled.div`
-  background-color: #edf0f5;
-  color: #8f9ba9;
-  width: 100%;
-  padding: 16px;
-  font-weight; 500;
-`;
-
 const TimeCounter = styled.div`
-  color: ${props => (props.isActive ? '#40C984' : '#8f9ba9')};
-  padding: 8px;
+  color: #fff;
   border-radius: 50%;
 `;
 
 const Button = styled.button`
   margin: 0;
-  padding: 0;
-  border-radius: 50%;
-  background-color: ${props => (props.isActive ? '#40C984' : '#8f9ba9')};
-  margin-left: 24px;
+  color: #fff;
   border: 0;
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
   outline: none;
-  width: 56px;
-  height: 56px;
-  cursor: pointer;
+  border-radius: 50%;
+  background-color: #417283;
   align-items: center;
+  padding: 0;
 `;
 
 const DisplayCount = styled.span`
-  padding: 8px;
-  line-height: 1.5;
-  font-size: 24px;
+  font-size: 16px;
   color: #fff;
-  background-color: ${props => (props.isActive ? '#40C984' : '#8f9ba9')};
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 4px;
+`;
+
+const DragAndDrop = styled.img.attrs({
+  src: 'src/assets/dragndrop.svg',
+})`
+  -webkit-app-region: drag;
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+`;
+
+const Play = styled.img.attrs({
+  src: 'src/assets/play.svg',
+})`
+  width: 12px;
+  height: 12px;
+`;
+
+const Stop = styled.img.attrs({
+  src: 'src/assets/stop.svg',
+})`
+  width: 12px;
+  height: 12px;
+`;
+
+const Close = styled.img.attrs({
+  src: 'src/assets/clear.svg',
+})`
+  width: 8px;
+  height: 8px;
+`;
+
+const CloseButton = styled.button`
+  margin: 0;
+  margin-right: 4px;
+  color: #fff;
+  border: 0;
+  width: 20px;
+  height: 20px;
+  outline: none;
+  border-radius: 50%;
+  background-color: #000;
+  align-items: center;
+  padding: 0;
+`;
+
+const TimerState = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: ${props => (props.isActive ? '#40C984' : '#000')};
 `;
 
 type Props = {
   timerState: string,
-  workedTime: string,
   hours: string,
   minutes: string,
-  seconds: string,
   timeStamp: Object,
   toggleTimerState: Function,
   setStartTime: Function,
@@ -119,16 +113,14 @@ type Props = {
   saveTimeStamp: Function,
 };
 
-class Timer extends React.Component<Props> {
+class Widget extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
     this.timer = null;
   }
 
   componentWillUnmount() {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
+    clearInterval(this.timer);
   }
 
   tick = () => {
@@ -136,9 +128,7 @@ class Timer extends React.Component<Props> {
   };
 
   startTimer = () => {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
+    clearInterval(this.timer);
     this.props.resetTimer();
     this.props.setStartTime(format(new Date()));
     this.updateCurrentTimer();
@@ -161,12 +151,16 @@ class Timer extends React.Component<Props> {
 
   toggleTimer = () => {
     this.props.toggleTimerState();
-
     if (this.props.timerState === 'Play') {
       this.startTimer();
     } else {
       this.stopTimer();
     }
+  };
+
+  closeWindow = () => {
+    const window = remote.getCurrentWindow();
+    window.hide();
   };
 
   timer: any;
@@ -177,25 +171,22 @@ class Timer extends React.Component<Props> {
       .map(time => <DisplayCount isActive={this.props.timerState !== 'Play'}>{time}</DisplayCount>);
 
   render() {
-    const { timerState, workedTime } = this.props;
+    const { timerState } = this.props;
 
     return (
-      <Counter>
-        <Header isActive={timerState !== 'Play'}>
-          <Logo />
-          <span>Time Doctor</span>
-        </Header>
-        <Time>
-          <TimeCounter isActive={timerState !== 'Play'}>
-            {this.renderCounter(this.props.hours)}:{this.renderCounter(this.props.minutes)}:
-            {this.renderCounter(this.props.seconds)}
-            <Button isActive={timerState !== 'Play'} onClick={this.toggleTimer}>
-              {timerState === 'Play' ? <Play /> : <Stop />}
-            </Button>
-          </TimeCounter>
-        </Time>
-        <Footer>Worked Today: {workedTime}</Footer>
-      </Counter>
+      <Time>
+        <DragAndDrop />
+        <Button isActive={timerState !== 'Play'} onClick={this.toggleTimer}>
+          {timerState === 'Play' ? <Play /> : <Stop />}
+        </Button>
+        <TimerState isActive={timerState !== 'Play'} />
+        <TimeCounter>
+          {this.renderCounter(this.props.hours)}:{this.renderCounter(this.props.minutes)}
+        </TimeCounter>
+        <CloseButton onClick={this.closeWindow}>
+          <Close />
+        </CloseButton>
+      </Time>
     );
   }
 }
@@ -203,10 +194,8 @@ class Timer extends React.Component<Props> {
 const mapStateToProps = state => ({
   timerState: timerSelectors.getTimerState(state),
   currentTime: timerSelectors.getCurrentTime(state),
-  workedTime: timerSelectors.getWorkedTimeNormalized(state),
   hours: timerSelectors.getHours(state),
   minutes: timerSelectors.getMinutes(state),
-  seconds: timerSelectors.getSeconds(state),
   timeStamp: timerSelectors.getSavedTimeStamp(state),
 });
 
@@ -222,4 +211,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Timer);
+)(Widget);

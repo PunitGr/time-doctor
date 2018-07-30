@@ -11,12 +11,14 @@ type State = {
   startTime: ?string,
   stopTime: ?string,
   currentTime: ?string,
+  timeStampObject: Object,
 };
 
 export const getTimerState = (state: State) => (state.timerState ? 'Stop' : 'Play');
 export const getStartTime = (state: State) => state.startTime;
 export const getStopTime = (state: State) => state.stopTime;
 export const getCurrentTime = (state: State) => state.currentTime;
+export const getSavedTimeStamp = (state: State) => state.timeStampObject;
 
 export const getWorkedTimeNormalized = createSelector(
   [getTimerState, getStartTime, getStopTime, getCurrentTime],

@@ -5,6 +5,7 @@ import {
   SET_START_TIME,
   SET_STOP_TIME,
   SET_CURRENT_TIME,
+  SAVE_TIMESTAMP,
 } from './constants';
 
 const initialState: Object = {
@@ -12,6 +13,7 @@ const initialState: Object = {
   startTime: null,
   stopTime: null,
   currentTime: null,
+  timeStampObject: null,
 };
 
 type State = {
@@ -19,6 +21,7 @@ type State = {
   startTime: ?string,
   stopTime: ?string,
   currentTime: ?string,
+  timeStampObject: Object,
 };
 
 const timer = (state: State = initialState, action: Object) => {
@@ -53,6 +56,18 @@ const timer = (state: State = initialState, action: Object) => {
         startTime: null,
         currentTime: null,
         stopTime: null,
+      };
+
+    case SAVE_TIMESTAMP:
+      return {
+        ...state,
+        timeStampObject: {
+          ...state.timeStampObject,
+          [action.payload]: {
+            startTime: state.startTime,
+            stopTime: state.stopTime,
+          },
+        },
       };
 
     default:
