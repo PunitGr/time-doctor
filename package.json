@@ -2,10 +2,11 @@
   "name": "time-doctor",
   "version": "1.0.0",
   "description": "Time doctor app",
-  "main": "index.js",
+  "main": "main.js",
   "author": "PunitGr",
   "license": "MIT",
   "scripts": {
+    "electron": "electron .",
     "start": "webpack-dev-server --mode=development --content-base . --history-api-fallback --hot --inline --progress --colors --port 8000",
     "build": "webpack -p"
   },
@@ -20,6 +21,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "electron": "^2.0.5",
     "eslint": "^5.2.0",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-config-prettier": "^2.9.0",
