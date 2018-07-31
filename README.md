@@ -21,12 +21,15 @@ yarn electron // Open another tab
 ### Screenshots
 
 * **Timer stopped (Inactive)**
-  ![Inactive main window](/screenshots/Screen Shot 2018-07-31 at 6.09.15 AM)
 
-  ![Inactive widget](/screenshots/Screen Shot 2018-07-31 at 6.09.39 AM)
+  ![Inactive main window](/screenshots/Screen%20Shot%202018-07-31%20at%206.09.15%20AM.png)
+
+  ![Inactive widget](/screenshots/Screen%20Shot%202018-07-31%20at%206.09.39%20AM.png)
 
 * **Timer play (Active)**
-  ![Active main window](/screenshots/Screen Shot 2018-07-31 at 6.09.57 AM.png)
 
-  ![Inactive widget](/screenshots/Screen Shot 2018-07-31 at 6.10.00 AM.png)
+  ![Active main window](/screenshots/Screen%20Shot%202018-07-31%20at%206.09.57%20AM.png)
 
+  ![Inactive widget](/screenshots/Screen%20Shot%202018-07-31%20at%206.10.00%20AM.png)
+
+**Note: The format of time displayed in the main window is `HH:MM:SS` and in the widget is `MM:SS`.**
