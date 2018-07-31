@@ -18,6 +18,15 @@ yarn electron // Open another tab
 - The widget is draggable. Go to `Electron > Open widget` to show the widget.
 ```
 
-## Screenshots
+### Screenshots
 
+* **Timer stopped (Inactive)**
+  ![Inactive main window](/screenshots/Screen Shot 2018-07-31 at 6.09.15 AM)
+
+  ![Inactive widget](/screenshots/Screen Shot 2018-07-31 at 6.09.39 AM)
+
+* **Timer play (Active)**
+  ![Active main window](/screenshots/Screen Shot 2018-07-31 at 6.09.57 AM.png)
+
+  ![Inactive widget](/screenshots/Screen Shot 2018-07-31 at 6.10.00 AM.png)
 
