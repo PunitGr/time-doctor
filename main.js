@@ -1,20 +1,50 @@
-const electron = require('electron');
-const path = require('path');
-const url = require('url');
+import electron from 'electron';
+import path from 'path';
+import url from 'url';
+/*eslint-disable */
+import store from './mainStore';
 
+const { URL } = url;
 // Module to control application life.
-const { app } = electron;
+const { app, Menu } = electron;
 
 // Module to create native browser window.
 const { BrowserWindow } = electron;
+const { ipcMain } = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let widget;
+let showWidget = false;
+
+const hide = win => win.hide();
+const show = win => win.show();
 
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 600, height: 400, backgroundColor: '#fff' });
+
+  const { screen } = electron;
+  const screenSize = screen.getPrimaryDisplay().workAreaSize;
+
+  widget = new BrowserWindow({
+    width: 144,
+    height: 40,
+    x: screenSize.width - 100,
+    y: screenSize.height - 100,
+    resizable: false,
+    transparent: false,
+    frame: false,
+    minimizable: false,
+    maximizable: false,
+    closable: false,
+    alwaysOnTop: true,
+    show: true,
+    backgroundColor: '#34495e',
+  });
+  widget.setAlwaysOnTop(true);
+  widget.setSkipTaskbar(true);
 
   // and load the index.html of the app.
   const startUrl = url.format({
@@ -24,8 +54,48 @@ function createWindow() {
   });
   mainWindow.loadURL(startUrl);
 
-  // Open the DevTools.
+  const widgetUrl = new URL(`file://${__dirname}/index.html#/widget`);
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    widget.loadURL(widgetUrl.href);
+  });
+
   mainWindow.webContents.openDevTools();
+
+  const menuTemplate = [
+    {
+      label: 'Electron',
+      submenu: [
+        {
+          label: 'Open widget',
+          click: () => {
+            show(widget);
+          },
+        },
+        {
+          label: 'Close widget',
+          click: () => {
+            hide(widget);
+          },
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Quit',
+          click: () => {
+            if (widget) {
+              widget.destroy();
+            }
+            app.quit();
+          },
+          accelerator: 'Cmd+Q',
+        },
+      ],
+    },
+  ];
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
@@ -33,6 +103,18 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+    if (widget) {
+      widget.destroy();
+    }
+  });
+
+  widget.on('closed', () => {
+    widget = null;
+  });
+
+  ipcMain.on('hide', () => {
+    showWidget = !showWidget;
+    hide(widget);
   });
 }
 
