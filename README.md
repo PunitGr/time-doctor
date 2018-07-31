@@ -32,4 +32,4 @@ yarn electron // Open another tab
 
   ![Inactive widget](/screenshots/Screen%20Shot%202018-07-31%20at%206.10.00%20AM.png)
 
-**Note: The format of time displayed in the main window is `HH:MM:SS` and in the widget is `MM:SS`.**
+**Note: The format of time displayed in the main window is `HH:MM:SS` and in the widget is `HH:MM`.**
