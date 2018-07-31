@@ -60,8 +60,6 @@ function createWindow() {
     widget.loadURL(widgetUrl.href);
   });
 
-  mainWindow.webContents.openDevTools();
-
   const menuTemplate = [
     {
       label: 'Electron',
